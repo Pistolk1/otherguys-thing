@@ -46,6 +46,8 @@
             pictureBox1 = new PictureBox();
             label5 = new Label();
             saveSingleFile = new SaveFileDialog();
+            saveMultipleFiles = new FolderBrowserDialog();
+            label6 = new Label();
             tabControl1.SuspendLayout();
             singleVersion.SuspendLayout();
             multiVersion.SuspendLayout();
@@ -177,9 +179,11 @@
             button2.TabIndex = 5;
             button2.Text = "Download!";
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // credits
             // 
+            credits.Controls.Add(label6);
             credits.Controls.Add(pictureBox2);
             credits.Controls.Add(pictureBox1);
             credits.Controls.Add(label5);
@@ -194,6 +198,7 @@
             // pictureBox2
             // 
             pictureBox2.Image = Properties.Resources.lockpickblack;
+            pictureBox2.InitialImage = Properties.Resources.loading;
             pictureBox2.Location = new Point(72, 97);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(285, 74);
@@ -205,6 +210,7 @@
             // pictureBox1
             // 
             pictureBox1.ImageLocation = "https://github.com/qfoxb.png";
+            pictureBox1.InitialImage = Properties.Resources.loading;
             pictureBox1.Location = new Point(6, 6);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(50, 50);
@@ -227,6 +233,15 @@
             // 
             saveSingleFile.Title = "Save Roblox Place File";
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(68, 34);
+            label6.Name = "label6";
+            label6.Size = new Size(280, 60);
+            label6.TabIndex = 3;
+            label6.Text = "Roblox Place Downloader is a C# Program designed\r\nto download a specific version of an uncopylocked\r\nplace with ease.\r\nNot affiliated with Roblox.\r\n";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -234,7 +249,7 @@
             ClientSize = new Size(365, 200);
             Controls.Add(tabControl1);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Roblox Place Downloader";
             tabControl1.ResumeLayout(false);
             singleVersion.ResumeLayout(false);
             singleVersion.PerformLayout();
@@ -267,5 +282,7 @@
         private PictureBox pictureBox1;
         private Label label5;
         private SaveFileDialog saveSingleFile;
+        private FolderBrowserDialog saveMultipleFiles;
+        private Label label6;
     }
 }
