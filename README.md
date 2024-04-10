@@ -1,0 +1,5 @@
+# Roblox-Place-Downloader [![.NET](https://github.com/LockpickInteractive/Roblox-Place-Downloader/actions/workflows/dotnet.yml/badge.svg)](https://github.com/LockpickInteractive/Roblox-Place-Downloader/actions/workflows/dotnet.yml) [![Download Nightly](https://img.shields.io/badge/download-nightly-purple)](https://nightly.link/LockpickInteractive/Roblox-Place-Downloader/workflows/dotnet/main/Roblox-Place-Downloader.zip)
+## A tool to download (single or multiple) versions of an uncopylocked roblox place
+# Anti-Virus False positives
+### Your antivirus may falsely detect this program as a virus. This is because the program is not signed (very expensive), and that it can download files. As seen in [this virustotal report](https://www.virustotal.com/gui/file/6516a1552920a8f3fcf8ce5d26d69d00f89b8dab97867d9a41936403990abc97) the only detection is "AIDetectMalware" because it believes that all downloading behavior is a virus. 
+### You may also see a message about "Windows Protected your PC". This is because the file is not signed. Press "More Info" then "Run Anyway" to get around this.
