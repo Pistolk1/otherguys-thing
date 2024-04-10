@@ -27,15 +27,35 @@ namespace Roblox_Place_Downloader
 
         private void button1_Click(object sender, EventArgs e) // Download Single Place Version
         {
-            long placeId = long.Parse(textBox1.Text);
-            long versionId = long.Parse(textBox2.Text);
+            if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text))
+            {
+                MessageBox.Show("Please enter both Place ID and Version ID.");
+                return;
+            }
+
+            long placeId, versionId;
+            if (!long.TryParse(textBox1.Text, out placeId) || !long.TryParse(textBox2.Text, out versionId))
+            {
+                MessageBox.Show("Invalid Place ID or Version ID.");
+                return;
+            }
+
             string url = "https://assetdelivery.roblox.com/v1/asset/?id=" + placeId + "&versionId=" + versionId;
 
             #pragma warning disable SYSLIB0014 // Type or member is obsolete
             using (WebClient client = new WebClient())
             {
                 client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
-                byte[] compressedBytes = client.DownloadData(url);
+                byte[] compressedBytes;
+                try
+                {
+                    compressedBytes = client.DownloadData(url);
+                }
+                catch (WebException ex)
+                {
+                    MessageBox.Show("Error downloading file: " + ex.Message);
+                    return;
+                }
 
                 using (GZipStream decompressionStream = new GZipStream(new MemoryStream(compressedBytes), CompressionMode.Decompress))
                 {
@@ -68,59 +88,76 @@ namespace Roblox_Place_Downloader
                     }
                 }
             }
-
-
-
         }
+
 
         private void button2_Click(object sender, EventArgs e)
         {
-                long placeId = long.Parse(textBox4.Text);
-                string[] versionRange = textBox3.Text.Split(',');
-                long minVersionId = long.Parse(versionRange[0]);
-                long maxVersionId = long.Parse(versionRange[1]);
+            if (string.IsNullOrWhiteSpace(textBox4.Text) || string.IsNullOrWhiteSpace(textBox3.Text))
+            {
+                MessageBox.Show("Please enter both Place ID and Version Range.");
+                return;
+            }
 
-                FolderBrowserDialog saveMultipleFiles = new FolderBrowserDialog();
-                if (saveMultipleFiles.ShowDialog() == DialogResult.OK)
+            long placeId, minVersionId, maxVersionId;
+            if (!long.TryParse(textBox4.Text, out placeId) ||
+                !long.TryParse(textBox3.Text.Split(',')[0], out minVersionId) ||
+                !long.TryParse(textBox3.Text.Split(',')[1], out maxVersionId))
+            {
+                MessageBox.Show("Invalid Place ID or Version Range.");
+                return;
+            }
+
+            FolderBrowserDialog saveMultipleFiles = new FolderBrowserDialog();
+            if (saveMultipleFiles.ShowDialog() == DialogResult.OK)
+            {
+                string folderPath = saveMultipleFiles.SelectedPath;
+
+                for (long versionId = minVersionId; versionId <= maxVersionId; versionId++)
                 {
-                    string folderPath = saveMultipleFiles.SelectedPath;
-
-                    for (long versionId = minVersionId; versionId <= maxVersionId; versionId++)
-                    {
-                        string url = "https://assetdelivery.roblox.com/v1/asset/?id=" + placeId + "&versionId=" + versionId;
+                    string url = "https://assetdelivery.roblox.com/v1/asset/?id=" + placeId + "&versionId=" + versionId;
                     #pragma warning disable SYSLIB0014 // Type or member is obsolete
                     using (WebClient client = new WebClient())
+                    {
+                        client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+                        byte[] compressedBytes;
+                        try
                         {
-                            client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
-                            byte[] compressedBytes = client.DownloadData(url);
+                            compressedBytes = client.DownloadData(url);
+                        }
+                        catch (WebException ex)
+                        {
+                            MessageBox.Show("Error downloading file: " + ex.Message);
+                            return;
+                        }
 
-                            using (GZipStream decompressionStream = new GZipStream(new MemoryStream(compressedBytes), CompressionMode.Decompress))
+                        using (GZipStream decompressionStream = new GZipStream(new MemoryStream(compressedBytes), CompressionMode.Decompress))
+                        {
+                            const int blockSize = 1024;
+                            byte[] buffer = new byte[blockSize];
+                            using (MemoryStream memory = new MemoryStream())
                             {
-                                const int blockSize = 1024;
-                                byte[] buffer = new byte[blockSize];
-                                using (MemoryStream memory = new MemoryStream())
+                                int count = 0;
+                                do
                                 {
-                                    int count = 0;
-                                    do
+                                    count = decompressionStream.Read(buffer, 0, blockSize);
+                                    if (count > 0)
                                     {
-                                        count = decompressionStream.Read(buffer, 0, blockSize);
-                                        if (count > 0)
-                                        {
-                                            memory.Write(buffer, 0, count);
-                                        }
+                                        memory.Write(buffer, 0, count);
                                     }
-                                    while (count > 0);
-
-                                    byte[] decompressedBytes = memory.ToArray();
-
-                                    string filePath = Path.Combine(folderPath, versionId + ".rbxl");
-                                    File.WriteAllBytes(filePath, decompressedBytes);
                                 }
+                                while (count > 0);
+
+                                byte[] decompressedBytes = memory.ToArray();
+
+                                string filePath = Path.Combine(folderPath, versionId + ".rbxl");
+                                File.WriteAllBytes(filePath, decompressedBytes);
                             }
                         }
                     }
                 }
             }
         }
+
     }
 
