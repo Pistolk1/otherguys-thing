@@ -45,6 +45,7 @@ namespace Roblox_Place_Downloader
 #pragma warning disable SYSLIB0014 // Type or member is obsolete
             using (WebClient client = new WebClient())
             {
+                client.Headers[HttpRequestHeader.CacheControl] = "no-cache";
                 client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
                 byte[] compressedBytes;
                 try
@@ -115,19 +116,18 @@ namespace Roblox_Place_Downloader
 
                 for (long versionId = minVersionId; versionId <= maxVersionId; versionId++)
                 {
-                    string url = "https://assetdelivery.roblox.com/v1/asset/?id=" + placeId + "&versionId=" + versionId;
-#pragma warning disable SYSLIB0014 // Type or member is obsolete
+                    string versionUrl = $"https://assetdelivery.roblox.com/v1/asset/?id={placeId}&versionId={versionId}";
                     using (WebClient client = new WebClient())
                     {
                         client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
                         byte[] compressedBytes;
                         try
                         {
-                            compressedBytes = client.DownloadData(url);
+                            compressedBytes = client.DownloadData(versionUrl);
                         }
                         catch (WebException ex)
                         {
-                            MessageBox.Show("Error downloading file: " + ex.Message);
+                            MessageBox.Show("Error downloading file: " + ex.Message + "URL: "+ versionUrl);
                             return;
                         }
 
@@ -150,7 +150,7 @@ namespace Roblox_Place_Downloader
 
                                 byte[] decompressedBytes = memory.ToArray();
 
-                                string filePath = Path.Combine(folderPath, versionId + ".rbxl");
+                                string filePath = Path.Combine(folderPath, $"{placeId}_{versionId}.rbxl");
                                 File.WriteAllBytes(filePath, decompressedBytes);
                             }
                         }
