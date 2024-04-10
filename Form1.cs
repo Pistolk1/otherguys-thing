@@ -42,7 +42,7 @@ namespace Roblox_Place_Downloader
 
             string url = "https://assetdelivery.roblox.com/v1/asset/?id=" + placeId + "&versionId=" + versionId;
 
-            #pragma warning disable SYSLIB0014 // Type or member is obsolete
+#pragma warning disable SYSLIB0014 // Type or member is obsolete
             using (WebClient client = new WebClient())
             {
                 client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -116,7 +116,7 @@ namespace Roblox_Place_Downloader
                 for (long versionId = minVersionId; versionId <= maxVersionId; versionId++)
                 {
                     string url = "https://assetdelivery.roblox.com/v1/asset/?id=" + placeId + "&versionId=" + versionId;
-                    #pragma warning disable SYSLIB0014 // Type or member is obsolete
+#pragma warning disable SYSLIB0014 // Type or member is obsolete
                     using (WebClient client = new WebClient())
                     {
                         client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -158,6 +158,6 @@ namespace Roblox_Place_Downloader
                 }
             }
         }
-
     }
+}
 
